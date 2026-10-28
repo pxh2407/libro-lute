@@ -15,7 +15,7 @@
         titolo: 'LUTE · <em>15 anni di NOI</em>', titoloPagina: 'LUTE · 15 anni di NOI',
         indice: 'Indice', pag: 'Pag.', copertina: 'Copertina', sedi: 'Le sedi della LUTE', indiceLibro: 'Indice del libro',
         quarta: 'Quarta di copertina', pagina: 'Pagina', vai: 'Vai alla pagina', prima: 'Pagina precedente', dopo: 'Pagina successiva',
-        chiudi: "Chiudi l'indice", cima: 'Torna in cima', meno: 'Pagine più piccole', piu: 'Pagine più grandi',
+        chiudi: "Chiudi l'indice", cima: "Torna all'indice", meno: 'Pagine più piccole', piu: 'Pagine più grandi',
         suggerimento: 'Tocca un titolo dell’indice per andare alla sua pagina'
       }
     },
@@ -29,7 +29,7 @@
         titolo: 'LUTE · <em>15 Years of Us</em>', titoloPagina: 'LUTE · 15 Years of Us',
         indice: 'Contents', pag: 'Page', copertina: 'Cover', sedi: 'The venues of LUTE', indiceLibro: 'Table of contents',
         quarta: 'Back cover', pagina: 'Page', vai: 'Go to page', prima: 'Previous page', dopo: 'Next page',
-        chiudi: 'Close the contents', cima: 'Back to top', meno: 'Smaller pages', piu: 'Larger pages',
+        chiudi: 'Close the contents', cima: 'Back to contents', meno: 'Smaller pages', piu: 'Larger pages',
         suggerimento: 'Tap a title in the contents to go to its page'
       }
     }
@@ -234,8 +234,8 @@
     vaiA(pdf, Math.abs(pdf - corrente) <= 2);
   });
 
-  // freccia in basso a destra: torna alla copertina
-  btnCima.addEventListener('click', function () { vaiA(1, Math.abs(corrente - 1) <= 3); });
+  // freccia in basso a destra: torna alla prima pagina dell'indice del libro
+  btnCima.addEventListener('click', function () { var p = paginaIndice(ed.zone); vaiA(p, Math.abs(corrente - p) <= 3); });
 
   document.getElementById('btnPrima').addEventListener('click', function () { vaiA(corrente - 1, true); });
   document.getElementById('btnDopo').addEventListener('click', function () { vaiA(corrente + 1, true); });
@@ -275,7 +275,7 @@
   // ---------- pagina corrente: quella che occupa la parte alta dello schermo
   function aggiorna(pdf) {
     corrente = pdf;
-    btnCima.hidden = pdf <= 2;   // sulla copertina e sulla pagina dopo la freccia non serve
+    btnCima.hidden = pdf <= paginaIndice(ed.zone);   // prima dell'indice e sulla sua prima pagina la freccia non serve
     if (document.activeElement !== numPag) numPag.value = etichetta(pdf);
     var attiva = null;
     linkVoci.forEach(function (a) { if (+a.dataset.pdf <= pdf) attiva = a; });

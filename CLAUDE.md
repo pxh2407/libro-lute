@@ -38,7 +38,7 @@ App HTML-CSS-JS (statica, senza librerie) per leggere online il libro "LUTE · 1
 - **Numeri di pagina:** l'app usa i numeri stampati nel libro. Pagina del PDF = numero stampato + 1 (verificato su tutte le pagine numerate). Copertina = PDF 1.
 - Indirizzo per pagina: `#pagina-43` (si può condividere un link a un capitolo). Copertina: `#copertina`.
 - Frecce ← → della tastiera: pagina precedente/successiva.
-- **Freccia "torna in cima"** (2026-10-28): pulsante tondo verde con bordo oro in basso a destra (`#btnCima`, `.in-cima`), porta alla copertina; nascosto sulla copertina e sulla pagina 1 e quando l'indice è aperto sul telefono. Etichetta "Torna in cima" / "Back to top".
+- **Freccia "torna all'indice"** (2026-10-28): pulsante tondo verde con bordo oro in basso a destra (`#btnCima`, `.in-cima`), porta alla prima pagina dell'indice stampato (su richiesta dell'utente: NON alla copertina); nascosta prima dell'indice e sulla sua prima pagina, e quando l'indice laterale è aperto sul telefono. Etichetta "Torna all'indice" / "Back to contents".
 
 ## Note
 - Refuso nell'indice stampato: "Una grade famiglia" (pag. 111); il capitolo si intitola "Una grande famiglia". Nell'indice laterale è corretto (`CORREZIONI` in crea_pagine.py); l'immagine della pagina dell'indice resta com'è.
