@@ -35,7 +35,7 @@
     }
   };
   var ZOOM = [520, 640, 760, 900, 1050, 1200];
-  var VERSIONE_PAGINE = 2;   // da aumentare quando si rifanno le immagini delle pagine
+  var VERSIONE_PAGINE = 3;   // da aumentare quando si rifanno le immagini delle pagine
 
   var libro = document.getElementById('libro');
   var elenco = document.getElementById('elenco');

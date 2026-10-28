@@ -14,13 +14,14 @@ PAGINE_INDICE = range(6, 11)
 PRIMA_PAGINA_TESTO = 12
 
 d = pymupdf.open(PDF)
-from titolo_inglese import titolo_inglese
-titolo_inglese(d)   # copertina e frontespizio: "15 anni di NOI" -> "15 Years of US"
+from titolo_inglese import pagine_iniziali_en
+rifatte = pagine_iniziali_en()   # pagg. 1, 2, 4 rifatte dalle italiane (vedi titolo_inglese.py)
 
 cartella = os.path.join(QUI, "pagine-en")
 os.makedirs(cartella, exist_ok=True)
 dimensioni = []
 for i, p in enumerate(d):
+    p = rifatte.get(i + 1, p)
     z = LARGHEZZA / p.rect.width
     pix = p.get_pixmap(matrix=pymupdf.Matrix(z, z))
     Image.frombytes("RGB", (pix.width, pix.height), pix.samples).save(
