@@ -2,11 +2,15 @@
 
 App HTML-CSS-JS (statica, senza librerie) per leggere online il libro "LUTE · 15 anni di NOI" (LUTE Milazzo, marzo 2026, 211 pagine). Creata il 2026-10-28.
 
+**Online:** https://pxh2407.github.io/libro-lute/ (sito a sé, scelto dall'utente il 2026-10-28). Link a un capitolo: aggiungere `#pagina-N` (es. `…/libro-lute/#pagina-43`).
+
 ## File
 - `index.html`, `style.css`, `app.js` — l'app. Cache busting `?v=N` in index.html: incrementarlo a ogni modifica.
 - `dati.js` — **generato** da `crea_pagine.py`: dimensioni delle pagine, voci dell'indice (titolo, autore, pagina stampata), zone cliccabili sulle pagine dell'indice. Non modificarlo a mano.
 - `pagine/001.webp` … `211.webp` — le pagine del PDF in immagine (1100 px di larghezza, ~24 MB in tutto).
 - `crea_pagine.py` — rifà immagini e dati.js dal PDF `C:\Users\Filippo\Desktop\Libro Lute..pdf` (`python crea_pagine.py`). Da lanciare se cambia il PDF.
+- `copertina.jpg` (1200×630) — anteprima del link (meta `og:*` in index.html) e icona della scheda; si rifà con `python crea_copertina.py`.
+- `.nojekyll` — GitHub Pages pubblica i file così come sono.
 
 ## Come funziona
 - Pagine una sotto l'altra (caricate man mano che si scorre). Barra in alto: Indice, pagina precedente/successiva, casella "Pag." per andare a un numero, ingrandimento (solo computer).
@@ -18,6 +22,10 @@ App HTML-CSS-JS (statica, senza librerie) per leggere online il libro "LUTE · 1
 
 ## Note
 - Refuso nell'indice stampato: "Una grade famiglia" (pag. 111); il capitolo si intitola "Una grande famiglia". Nell'indice laterale è corretto (`CORREZIONI` in crea_pagine.py); l'immagine della pagina dell'indice resta com'è.
-- Pagina 3 del libro: "Vietata la riproduzione totale o parziale … i diritti sono riservati all'autore": prima di pubblicarlo online serve il consenso.
+- Pagina 3 del libro: "Vietata la riproduzione totale o parziale … i diritti sono riservati all'autore" (segnalato all'utente prima della pubblicazione).
 - Anteprima locale: configurazione `libro-lute` (porta 8795) in `ATTICO PER INTERNO\.claude\launch.json`.
-- Non ancora pubblicato online (nessun repository).
+
+## Pubblicazione
+- Repo https://github.com/pxh2407/libro-lute (pubblico, branch `main`), GitHub Pages dal branch `main`, cartella principale.
+- Dopo ogni modifica: aggiornare questo file, incrementare `?v=N` in index.html, commit e `git push`.
+- Se GitHub Pages resta in coda o fallisce: controllare `pages/builds/latest` con l'API e, se serve, `POST pages/builds` (token da `git credential fill`; `gh` non è installato).
