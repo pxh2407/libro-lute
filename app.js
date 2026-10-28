@@ -10,7 +10,7 @@
       pagine: LIBRO.pagine,
       indice: LIBRO.indice.map(function (v) { return { titolo: v.titolo, autore: v.autore, pdf: v.pag + LIBRO.scarto }; }),
       zone: LIBRO.zone, campoZona: function (z) { return z.pag + LIBRO.scarto; },
-      sedi: 4,
+      sedi: 4, numeriIndice: true,
       testi: {
         titolo: 'LUTE · <em>15 anni di NOI</em>', titoloPagina: 'LUTE · 15 anni di NOI',
         indice: 'Indice', pag: 'Pag.', copertina: 'Copertina', sedi: 'Le sedi della LUTE', indiceLibro: 'Indice del libro',
@@ -24,7 +24,7 @@
       pagine: LIBRO_EN.pagine,
       indice: LIBRO_EN.indice,
       zone: LIBRO_EN.zone, campoZona: function (z) { return z.pdf; },
-      sedi: 4,
+      sedi: 4, numeriIndice: false,   // edizione inglese: senza numeri, si va al capitolo da titolo o autore
       testi: {
         titolo: 'LUTE · <em>15 Years of Us</em>', titoloPagina: 'LUTE · 15 Years of Us',
         indice: 'Contents', pag: 'Page', copertina: 'Cover', sedi: 'The venues of LUTE', indiceLibro: 'Table of contents',
@@ -35,7 +35,7 @@
     }
   };
   var ZOOM = [520, 640, 760, 900, 1050, 1200];
-  var VERSIONE_PAGINE = 4;   // da aumentare quando si rifanno le immagini delle pagine
+  var VERSIONE_PAGINE = 5;   // da aumentare quando si rifanno le immagini delle pagine
 
   var libro = document.getElementById('libro');
   var elenco = document.getElementById('elenco');
@@ -117,7 +117,7 @@
       { titolo: t.sedi, pdf: ed.sedi },
       { titolo: t.indiceLibro, pdf: primaIndice },
       { separa: true }
-    ].concat(ed.indice.map(function (v) { return { titolo: v.titolo, autore: v.autore, pdf: v.pdf, num: true }; }),
+    ].concat(ed.indice.map(function (v) { return { titolo: v.titolo, autore: v.autore, pdf: v.pdf, num: ed.numeriIndice }; }),
              [{ separa: true }, { titolo: t.quarta, pdf: TOT }]);
     elenco.replaceChildren();
     linkVoci = [];

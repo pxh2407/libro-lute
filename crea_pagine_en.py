@@ -1,7 +1,7 @@
 # Versione inglese: crea pagine-en/001.webp ... e dati-en.js dal PDF tradotto.
 # I numeri dell'indice inglese sono copiati da quello italiano e non corrispondono alle pagine del PDF inglese:
 # l'inizio di ogni capitolo si trova cercando le pagine con il titolo in grande, e i numeri stampati nell'indice
-# vengono riscritti giusti nelle immagini.
+# vengono tolti dalle immagini.
 # Uso: python crea_pagine_en.py
 import os, re, json, sys
 import pymupdf
@@ -63,17 +63,18 @@ for v in indice:
     print(v["pdf"], v["titolo"], "–", v["autore"])
 
 
-# numeri di pagina nell'indice stampato: quelli del PDF erano copiati dall'edizione italiana.
-# Si cancellano e si riscrivono quelli giusti, uguali a quelli dell'app (pagina N = pagina N+1 del PDF).
+# numeri di pagina nell'indice stampato: quelli del PDF erano copiati dall'edizione italiana e sbagliati.
+# Su richiesta dell'utente (2026-10-28) si tolgono del tutto, insieme a "P." e ai segni »: nell'app si va al
+# capitolo toccando il titolo o il nome dell'autore.
 NUMERI_FONT = r"C:\Windows\Fonts\times.ttf"   # simile al Minion del libro
-numeri = []
+colonna_numeri = []
 for n in PAGINE_INDICE:
     for b in d[n - 1].get_text("dict")["blocks"]:
         for l in b.get("lines", []):
             for s in l["spans"]:
-                if s["bbox"][0] > 320 and re.fullmatch(r"(»\s*)?\d+", s["text"].strip()):  # "119" oppure "» 119"
-                    numeri.append((n, s))
-assert len(numeri) == len(indice), (len(numeri), len(indice))
+                if s["bbox"][0] > 320 and s["text"].strip():
+                    colonna_numeri.append((n, s))
+assert sum(1 for _, s in colonna_numeri if re.search(r"\d", s["text"])) == len(indice)
 
 # pag. 6 dell'indice: nel PDF le righe "by ..." risalgono man mano e dalla 5ª voce si sovrappongono ai titoli.
 # Si riscrivono titoli e autori della pagina, ogni autore 14 punti sotto il suo titolo.
@@ -88,7 +89,7 @@ for b in d[SOVRAPPOSTI - 1].get_text("dict")["blocks"]:
 da_riscrivere.sort(key=lambda s: s["origin"][1])
 
 for n in PAGINE_INDICE:
-    for _, s in [x for x in numeri if x[0] == n]:
+    for _, s in [x for x in colonna_numeri if x[0] == n]:
         d[n - 1].add_redact_annot(pymupdf.Rect(s["bbox"]))
     if n == SOVRAPPOSTI:
         for s in da_riscrivere:
@@ -106,18 +107,7 @@ for s in da_riscrivere:
                                    fontfile=NUMERI_FONT_CORSIVO if autore else NUMERI_FONT,
                                    color=pymupdf.sRGB_to_pdf(s["color"]))
 
-f_num = pymupdf.Font(fontfile=NUMERI_FONT)
-for (n, s), v in zip(numeri, indice):
-    testo = str(v["pdf"] - 1)
-    larg = f_num.text_length(testo, fontsize=s["size"])
-    destra = s["bbox"][2]
-    if s["text"].strip().startswith("»"):  # il segno » era nello stesso pezzo di testo: si riscrive anche quello, staccato
-        destra = 369
-        d[n - 1].insert_text((s["bbox"][0] - 4, s["origin"][1]), "»", fontsize=s["size"],
-                             fontname="numeri", fontfile=NUMERI_FONT, color=pymupdf.sRGB_to_pdf(s["color"]))
-    d[n - 1].insert_text((destra - larg, s["origin"][1]), testo, fontsize=s["size"],
-                         fontname="numeri", fontfile=NUMERI_FONT, color=pymupdf.sRGB_to_pdf(s["color"]))
-print("numeri dell'indice corretti:", ", ".join(re.sub(r"\D", "", s["text"]) + "→" + str(v["pdf"] - 1) for (_, s), v in zip(numeri, indice)))
+print("numeri tolti dall'indice:", len(colonna_numeri), "pezzi di testo")
 
 cartella = os.path.join(QUI, "pagine-en")
 os.makedirs(cartella, exist_ok=True)
