@@ -4,7 +4,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 QUI = os.path.dirname(os.path.abspath(__file__))
-MARRONE, CREMA, VERDE = (74, 47, 27), (246, 239, 227), (164, 214, 150)
+MARRONE, CREMA, VERDE = (27, 94, 63), (255, 255, 255), (222, 190, 110)  # verde, bianco e oro del sito LUTE
 FONT = r"C:\Windows\Fonts\georgia.ttf"
 FONT_I = r"C:\Windows\Fonts\georgiai.ttf"
 
@@ -19,7 +19,7 @@ d = ImageDraw.Draw(img)
 x = 50 + cop.width + 60
 d.text((x, 150), "LUTE", font=ImageFont.truetype(FONT, 84), fill=CREMA)
 d.text((x, 250), "15 anni di NOI", font=ImageFont.truetype(FONT_I, 64), fill=CREMA)
-d.line((x, 352, W - 60, 352), fill=(150, 115, 80), width=2)
+d.line((x, 352, W - 60, 352), fill=(168, 132, 44), width=3)
 d.text((x, 380), "Il libro da sfogliare online", font=ImageFont.truetype(FONT, 38), fill=VERDE)
 d.text((x, 440), "Libera Università della Terza Età", font=ImageFont.truetype(FONT, 30), fill=CREMA)
 d.text((x, 480), "Milazzo", font=ImageFont.truetype(FONT, 30), fill=CREMA)

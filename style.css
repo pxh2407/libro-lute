@@ -1,14 +1,15 @@
 :root {
-  --marrone: #4a2f1b;
-  --marrone-chiaro: #7a5434;
-  --crema: #f6efe3;
-  --verde: #3d7a35;
-  --fondo: #e7dfd2;
-  --testo: #2b2118;
-  --testo-tenue: #6f6152;
-  --pannello: #fbf7f0;
-  --riga: #e4d9c7;
-  --attivo: #efe3cf;
+  /* colori del sito lutemilazzo.org */
+  --verde-lute: #1b5e3f;
+  --verde-scuro: #123f2a;
+  --oro: #a8842c;
+  --bianco: #ffffff;
+  --fondo: #eef0ee;
+  --testo: #1f2a24;
+  --testo-tenue: #5f6b64;
+  --pannello: #ffffff;
+  --riga: #e1e6e2;
+  --attivo: #e8f1ec;
   --barra-h: 56px;
   --pannello-w: 330px;
   --larghezza: 760px;
@@ -17,12 +18,12 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --fondo: #231b15;
-    --testo: #efe6d8;
-    --testo-tenue: #b3a490;
-    --pannello: #2c221b;
-    --riga: #3d3127;
-    --attivo: #45362a;
+    --fondo: #121a16;
+    --testo: #e8eee9;
+    --testo-tenue: #a7b5ac;
+    --pannello: #18231d;
+    --riga: #2a3a31;
+    --attivo: #21362a;
   }
 }
 
@@ -43,9 +44,10 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
   height: var(--barra-h);
   display: flex; align-items: center; gap: 8px;
   padding: 0 12px;
-  background: var(--marrone);
-  color: var(--crema);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+  background: var(--verde-lute);
+  color: var(--bianco);
+  border-bottom: 4px solid var(--oro);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .2);
 }
 .barra__btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -57,7 +59,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 }
 .barra__btn:hover { background: rgba(255, 255, 255, .12); }
 .barra__btn:focus-visible, .vai input:focus-visible, .elenco a:focus-visible, .zona:focus-visible {
-  outline: 3px solid #f2c46d; outline-offset: 2px;
+  outline: 3px solid var(--oro); outline-offset: 2px;
 }
 .barra__btn--indice { background: rgba(255, 255, 255, .1); padding: 0 12px; }
 .barra__titolo {
@@ -72,7 +74,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .vai input {
   width: 52px; height: 34px;
   border: 0; border-radius: 8px;
-  background: var(--crema); color: var(--marrone);
+  background: var(--bianco); color: var(--verde-scuro);
   font: 600 16px var(--sans); text-align: center;
 }
 .vai span { opacity: .85; white-space: nowrap; }
@@ -93,8 +95,8 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
   padding: 14px 16px 10px 20px;
   border-bottom: 1px solid var(--riga);
 }
-.pannello__testa h2 { margin: 0; font: 600 24px var(--serif); color: var(--marrone-chiaro); }
-@media (prefers-color-scheme: dark) { .pannello__testa h2 { color: #d9b98f; } }
+.pannello__testa h2 { margin: 0; font: 600 24px var(--serif); color: var(--verde-lute); }
+@media (prefers-color-scheme: dark) { .pannello__testa h2 { color: #d8bb6f; } }
 .pannello__chiudi {
   display: inline-flex; align-items: center; justify-content: center;
   width: 38px; height: 38px; border: 0; border-radius: 10px;
@@ -112,7 +114,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
   border-left: 4px solid transparent;
 }
 .elenco a:hover { background: var(--attivo); }
-.elenco a[aria-current="true"] { background: var(--attivo); border-left-color: var(--verde); }
+.elenco a[aria-current="true"] { background: var(--attivo); border-left-color: var(--oro); }
 .voce__titolo { font: 500 17px/1.25 var(--serif); }
 .voce__autore { grid-column: 1; font: italic 500 15px/1.3 var(--serif); color: var(--testo-tenue); }
 .voce__pag { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-size: 14px; color: var(--testo-tenue); font-variant-numeric: tabular-nums; }
@@ -146,7 +148,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
   border-radius: 6px;
   transition: background .15s;
 }
-.zona:hover, .zona:focus-visible { background: rgba(61, 122, 53, .14); box-shadow: inset 0 0 0 2px rgba(61, 122, 53, .5); }
+.zona:hover, .zona:focus-visible { background: rgba(27, 94, 63, .12); box-shadow: inset 0 0 0 2px rgba(168, 132, 44, .8); }
 
 /* indice chiuso (computer) */
 body.senza-indice .pannello { transform: translateX(-100%); }
@@ -179,13 +181,20 @@ body.senza-indice .libro { margin-left: 0; }
 .lingue button {
   min-width: 38px; height: 32px; padding: 0 8px;
   border: 0; border-radius: 8px;
-  background: transparent; color: var(--crema);
+  background: transparent; color: var(--bianco);
   font: 700 14px var(--sans); letter-spacing: .04em;
   cursor: pointer;
 }
-.lingue button[aria-pressed="true"] { background: var(--crema); color: var(--marrone); }
-.lingue button:focus-visible { outline: 3px solid #f2c46d; outline-offset: 2px; }
+.lingue button[aria-pressed="true"] { background: var(--oro); color: var(--bianco); }
+.lingue button:focus-visible { outline: 3px solid var(--oro); outline-offset: 2px; }
 @media (max-width: 460px) {
   .barra__titolo { display: none; }
   .lingue { margin-right: auto; }
 }
+
+/* ---------- logo della LUTE nella barra, su riquadro bianco come nel sito */
+.barra__titolo { display: flex; align-items: center; gap: 12px; }
+.barra__logo { height: 40px; width: auto; padding: 3px 8px; background: #fff; border-radius: 8px; flex: none; }
+.barra__testo { overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 760px) { .barra__testo { display: none; } }
+@media (max-width: 460px) { .barra__titolo { display: flex; flex: none; } .lingue { margin-right: auto; } .barra__logo { height: 34px; padding: 2px 6px; } }

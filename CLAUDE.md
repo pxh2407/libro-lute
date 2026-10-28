@@ -4,6 +4,11 @@ App HTML-CSS-JS (statica, senza librerie) per leggere online il libro "LUTE · 1
 
 **Online:** https://pxh2407.github.io/libro-lute/ (sito a sé, scelto dall'utente il 2026-10-28). Link a un capitolo: aggiungere `#pagina-N` (es. `…/libro-lute/#pagina-43`).
 
+## Stile LUTE (2026-10-28)
+- Colori del sito lutemilazzo.org: barra verde `#1b5e3f` con filo oro `#a8842c` in basso, verde scuro `#123f2a`, bianco; pulsante lingua attivo e voce d'indice attiva in oro. Variabili in cima a `style.css`.
+- Logo LUTE (`logo.png`, ricavato da `CLAUDE\Logo Lute.png`) su riquadro bianco nella barra, come nel sito. Sotto 760 px resta solo il logo, senza titolo.
+- Anche `copertina.jpg` (anteprima del link) è verde, bianca e oro.
+
 ## Versione inglese (2026-10-28)
 - Selettore **IT | EN** nella barra in alto. Lingua: `?lang=en` nell'indirizzo, poi quella scelta e salvata (`localStorage libro_lute_lingua`), poi quella del telefono (italiano → IT, altrimenti EN).
 - Il libro inglese è un PDF a parte fornito dall'utente: `C:\Users\Filippo\Desktop\Book 15 Years Lute.pdf` (217 pagine). `python crea_pagine_en.py` crea `pagine-en/` e `dati-en.js`.
