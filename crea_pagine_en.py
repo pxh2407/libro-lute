@@ -14,6 +14,8 @@ PAGINE_INDICE = range(6, 11)
 PRIMA_PAGINA_TESTO = 12
 
 d = pymupdf.open(PDF)
+from titolo_inglese import titolo_inglese
+titolo_inglese(d)   # copertina e frontespizio: "15 anni di NOI" -> "15 Years of US"
 
 cartella = os.path.join(QUI, "pagine-en")
 os.makedirs(cartella, exist_ok=True)

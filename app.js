@@ -35,6 +35,7 @@
     }
   };
   var ZOOM = [520, 640, 760, 900, 1050, 1200];
+  var VERSIONE_PAGINE = 2;   // da aumentare quando si rifanno le immagini delle pagine
 
   var libro = document.getElementById('libro');
   var elenco = document.getElementById('elenco');
@@ -85,7 +86,7 @@
       f.className = 'pagina';
       f.id = idPagina(pdf);
       var img = document.createElement('img');
-      img.src = ed.cartella + '/' + String(pdf).padStart(3, '0') + '.webp';
+      img.src = ed.cartella + '/' + String(pdf).padStart(3, '0') + '.webp?v=' + VERSIONE_PAGINE;
       img.width = dim[0];
       img.height = dim[1];
       img.alt = pdf === 1 ? t.copertina : t.pagina + ' ' + etichetta(pdf);
