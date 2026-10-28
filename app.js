@@ -1,9 +1,39 @@
-// Sfogliatore del libro "LUTE · 15 anni di NOI": pagine una sotto l'altra, indice cliccabile.
-// I dati (dimensioni delle pagine, voci dell'indice, zone cliccabili) sono in dati.js.
+// Sfogliatore del libro "LUTE · 15 anni di NOI" in italiano e in inglese: pagine una sotto l'altra, indice cliccabile.
+// I dati (dimensioni delle pagine, voci dell'indice, zone cliccabili) sono in dati.js (IT) e dati-en.js (EN).
+// Numeri di pagina: in entrambe le lingue "pagina N" = pagina N+1 del PDF (copertina = PDF 1).
 (function () {
-  var TOT = LIBRO.pagine.length;          // pagine del PDF (1 = copertina)
-  var SCARTO = LIBRO.scarto;              // pagina del PDF = numero stampato + SCARTO
-  var ULTIMA_STAMPATA = TOT - SCARTO;
+  // ---------- le due edizioni, con gli stessi campi
+  function paginaIndice(zone) { return Math.min.apply(null, Object.keys(zone).map(Number)); }
+  var EDIZIONI = {
+    it: {
+      cartella: 'pagine',
+      pagine: LIBRO.pagine,
+      indice: LIBRO.indice.map(function (v) { return { titolo: v.titolo, autore: v.autore, pdf: v.pag + LIBRO.scarto }; }),
+      zone: LIBRO.zone, campoZona: function (z) { return z.pag + LIBRO.scarto; },
+      sedi: 4,
+      testi: {
+        titolo: 'LUTE · <em>15 anni di NOI</em>', titoloPagina: 'LUTE · 15 anni di NOI',
+        indice: 'Indice', pag: 'Pag.', copertina: 'Copertina', sedi: 'Le sedi della LUTE', indiceLibro: 'Indice del libro',
+        quarta: 'Quarta di copertina', pagina: 'Pagina', vai: 'Vai alla pagina', prima: 'Pagina precedente', dopo: 'Pagina successiva',
+        chiudi: "Chiudi l'indice", meno: 'Pagine più piccole', piu: 'Pagine più grandi',
+        suggerimento: 'Tocca un titolo dell’indice per andare alla sua pagina'
+      }
+    },
+    en: {
+      cartella: 'pagine-en',
+      pagine: LIBRO_EN.pagine,
+      indice: LIBRO_EN.indice,
+      zone: LIBRO_EN.zone, campoZona: function (z) { return z.pdf; },
+      sedi: 4,
+      testi: {
+        titolo: 'LUTE · <em>15 Years of Us</em>', titoloPagina: 'LUTE · 15 Years of Us',
+        indice: 'Contents', pag: 'Page', copertina: 'Cover', sedi: 'The venues of LUTE', indiceLibro: 'Table of contents',
+        quarta: 'Back cover', pagina: 'Page', vai: 'Go to page', prima: 'Previous page', dopo: 'Next page',
+        chiudi: 'Close the contents', meno: 'Smaller pages', piu: 'Larger pages',
+        suggerimento: 'Tap a title in the contents to go to its page'
+      }
+    }
+  };
   var ZOOM = [520, 640, 760, 900, 1050, 1200];
 
   var libro = document.getElementById('libro');
@@ -13,90 +43,139 @@
   var btnIndice = document.getElementById('btnIndice');
   var schermoPiccolo = window.matchMedia('(max-width: 1000px)');
 
-  // numero stampato <-> pagina del PDF; la copertina (PDF 1) ha id "copertina"
-  function idPagina(pdf) { return pdf === 1 ? 'copertina' : 'pagina-' + (pdf - SCARTO); }
-  function pdfDaStampata(n) { return Math.min(TOT, Math.max(1, n + SCARTO)); }
-  function etichetta(pdf) { return pdf === 1 ? '' : String(pdf - SCARTO); }
+  var lingua, ed, TOT, figure = [], linkVoci = [], corrente = 1;
 
-  // ---------- pagine
-  var figure = [];
-  var frammento = document.createDocumentFragment();
-  LIBRO.pagine.forEach(function (dim, i) {
-    var pdf = i + 1;
-    if (LIBRO.zone[pdf] && pdf === Math.min.apply(null, Object.keys(LIBRO.zone).map(Number))) {
-      var s = document.createElement('p');
-      s.className = 'suggerimento';
-      s.textContent = 'Tocca un titolo dell’indice per andare alla sua pagina';
-      frammento.appendChild(s);
-    }
-    var f = document.createElement('figure');
-    f.className = 'pagina';
-    f.id = idPagina(pdf);
-    f.dataset.pdf = pdf;
-    var img = document.createElement('img');
-    img.src = 'pagine/' + String(pdf).padStart(3, '0') + '.webp';
-    img.width = dim[0];
-    img.height = dim[1];
-    img.alt = pdf === 1 ? 'Copertina' : 'Pagina ' + etichetta(pdf);
-    img.decoding = 'async';
-    if (pdf > 2) img.loading = 'lazy';
-    f.appendChild(img);
-    (LIBRO.zone[pdf] || []).forEach(function (z) {
-      var voce = LIBRO.indice.filter(function (v) { return v.pag === z.pag; })[0];
-      var a = document.createElement('a');
-      a.className = 'zona';
-      a.href = '#pagina-' + z.pag;
-      a.style.left = z.x + '%';
-      a.style.top = z.y + '%';
-      a.style.width = z.w + '%';
-      a.style.height = z.h + '%';
-      a.setAttribute('aria-label', (voce ? voce.titolo + ', ' : '') + 'pagina ' + z.pag);
-      f.appendChild(a);
+  function idPagina(pdf) { return pdf === 1 ? 'copertina' : 'pagina-' + (pdf - 1); }
+  function pdfDaNumero(n) { return Math.min(TOT, Math.max(1, n + 1)); }
+  function etichetta(pdf) { return pdf === 1 ? '' : String(pdf - 1); }
+
+  // ---------- disegna l'edizione nella lingua scelta
+  function disegna() {
+    var t = ed.testi;
+    document.documentElement.lang = lingua;
+    document.title = t.titoloPagina;
+    document.getElementById('titolo').innerHTML = t.titolo;
+    document.getElementById('etichettaIndice').textContent = t.indice;
+    document.getElementById('titoloIndice').textContent = t.indice;
+    document.getElementById('etichettaPag').textContent = t.pag;
+    numPag.setAttribute('aria-label', t.vai);
+    document.getElementById('btnPrima').setAttribute('aria-label', t.prima);
+    document.getElementById('btnDopo').setAttribute('aria-label', t.dopo);
+    document.getElementById('btnChiudi').setAttribute('aria-label', t.chiudi);
+    document.getElementById('zoomMeno').setAttribute('aria-label', t.meno);
+    document.getElementById('zoomPiu').setAttribute('aria-label', t.piu);
+    document.querySelectorAll('.lingue button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.lingua === lingua));
     });
-    figure.push(f);
-    frammento.appendChild(f);
-  });
-  libro.appendChild(frammento);
-  document.getElementById('totPag').textContent = '/ ' + ULTIMA_STAMPATA;
+    document.getElementById('totPag').textContent = '/ ' + (TOT - 1);
 
-  // ---------- indice laterale: inizio del libro, voci dell'indice, fine
-  var voci = [
-    { titolo: 'Copertina', pdf: 1 },
-    { titolo: 'Le sedi della LUTE', pdf: 4 },
-    { titolo: 'Indice del libro', pdf: Math.min.apply(null, Object.keys(LIBRO.zone).map(Number)) },
-    { separa: true }
-  ];
-  LIBRO.indice.forEach(function (v) {
-    voci.push({ titolo: v.titolo, autore: v.autore, pdf: pdfDaStampata(v.pag), pag: v.pag });
-  });
-  voci.push({ separa: true }, { titolo: 'Quarta di copertina', pdf: TOT });
+    // pagine
+    var primaIndice = paginaIndice(ed.zone);
+    var frammento = document.createDocumentFragment();
+    figure = [];
+    ed.pagine.forEach(function (dim, i) {
+      var pdf = i + 1;
+      if (pdf === primaIndice) {
+        var s = document.createElement('p');
+        s.className = 'suggerimento';
+        s.textContent = t.suggerimento;
+        frammento.appendChild(s);
+      }
+      var f = document.createElement('figure');
+      f.className = 'pagina';
+      f.id = idPagina(pdf);
+      var img = document.createElement('img');
+      img.src = ed.cartella + '/' + String(pdf).padStart(3, '0') + '.webp';
+      img.width = dim[0];
+      img.height = dim[1];
+      img.alt = pdf === 1 ? t.copertina : t.pagina + ' ' + etichetta(pdf);
+      img.decoding = 'async';
+      if (pdf > 2) img.loading = 'lazy';
+      f.appendChild(img);
+      (ed.zone[pdf] || []).forEach(function (z) {
+        var dest = ed.campoZona(z);
+        var voce = ed.indice.filter(function (v) { return v.pdf === dest; })[0];
+        var a = document.createElement('a');
+        a.className = 'zona';
+        a.href = '#' + idPagina(dest);
+        a.style.left = z.x + '%';
+        a.style.top = z.y + '%';
+        a.style.width = z.w + '%';
+        a.style.height = z.h + '%';
+        a.setAttribute('aria-label', (voce ? voce.titolo + ', ' : '') + t.pagina.toLowerCase() + ' ' + etichetta(dest));
+        f.appendChild(a);
+      });
+      figure.push(f);
+      frammento.appendChild(f);
+    });
+    libro.replaceChildren(frammento);
 
-  var linkVoci = [];
-  voci.forEach(function (v) {
-    var li = document.createElement('li');
-    if (v.separa) { li.className = 'separa'; li.setAttribute('aria-hidden', 'true'); elenco.appendChild(li); return; }
-    var a = document.createElement('a');
-    a.href = '#' + idPagina(v.pdf);
-    a.dataset.pdf = v.pdf;
-    var t = document.createElement('span');
-    t.className = 'voce__titolo';
-    t.textContent = v.titolo;
-    a.appendChild(t);
-    if (v.autore) {
-      var au = document.createElement('span');
-      au.className = 'voce__autore';
-      au.textContent = v.autore;
-      a.appendChild(au);
+    // indice laterale: inizio del libro, voci dell'indice, fine
+    var voci = [
+      { titolo: t.copertina, pdf: 1 },
+      { titolo: t.sedi, pdf: ed.sedi },
+      { titolo: t.indiceLibro, pdf: primaIndice },
+      { separa: true }
+    ].concat(ed.indice.map(function (v) { return { titolo: v.titolo, autore: v.autore, pdf: v.pdf, num: true }; }),
+             [{ separa: true }, { titolo: t.quarta, pdf: TOT }]);
+    elenco.replaceChildren();
+    linkVoci = [];
+    voci.forEach(function (v) {
+      var li = document.createElement('li');
+      if (v.separa) { li.className = 'separa'; li.setAttribute('aria-hidden', 'true'); elenco.appendChild(li); return; }
+      var a = document.createElement('a');
+      a.href = '#' + idPagina(v.pdf);
+      a.dataset.pdf = v.pdf;
+      var s = document.createElement('span');
+      s.className = 'voce__titolo';
+      s.textContent = v.titolo;
+      a.appendChild(s);
+      if (v.autore) {
+        s = document.createElement('span');
+        s.className = 'voce__autore';
+        s.textContent = v.autore;
+        a.appendChild(s);
+      }
+      if (v.num) {
+        s = document.createElement('span');
+        s.className = 'voce__pag';
+        s.textContent = etichetta(v.pdf);
+        a.appendChild(s);
+      }
+      li.appendChild(a);
+      elenco.appendChild(li);
+      linkVoci.push(a);
+    });
+  }
+
+  // ---------- cambio di lingua: si resta allo stesso punto del capitolo che si sta leggendo
+  function capitoloDi(e, pdf) {
+    var k = -1;
+    e.indice.forEach(function (v, i) { if (v.pdf <= pdf) k = i; });
+    return k;
+  }
+  function pdfCorrispondente(da, a, pdf) {
+    if (pdf === da.pagine.length) return a.pagine.length;          // quarta di copertina
+    var k = capitoloDi(da, pdf);
+    if (k < 0) return pdf;                                          // pagine iniziali: uguali
+    var fine = k + 1 < a.indice.length ? a.indice[k + 1].pdf - 1 : a.pagine.length - 1;
+    return Math.min(a.indice[k].pdf + (pdf - da.indice[k].pdf), fine);
+  }
+  function scegliLingua(l, primaVolta) {
+    if (!EDIZIONI[l] || l === lingua) return;
+    var precedente = ed, pdf = corrente;
+    lingua = l;
+    ed = EDIZIONI[l];
+    TOT = ed.pagine.length;
+    try { localStorage.setItem('libro_lute_lingua', l); } catch (e) {}
+    if (/[?&]lang=/.test(location.search)) {
+      history.replaceState(null, '', location.pathname + location.search.replace(/([?&]lang=)[a-z]+/, '$1' + l) + location.hash);
     }
-    if (v.pag) {
-      var p = document.createElement('span');
-      p.className = 'voce__pag';
-      p.textContent = v.pag;
-      a.appendChild(p);
-    }
-    li.appendChild(a);
-    elenco.appendChild(li);
-    linkVoci.push(a);
+    disegna();
+    if (!primaVolta) vaiA(pdfCorrispondente(precedente, ed, pdf), false);
+  }
+  document.querySelectorAll('.lingue button').forEach(function (b) {
+    b.addEventListener('click', function () { scegliLingua(b.dataset.lingua); });
   });
 
   // ---------- apertura e chiusura dell'indice
@@ -132,13 +211,13 @@
     pdf = Math.min(TOT, Math.max(1, pdf));
     var f = figure[pdf - 1];
     f.scrollIntoView({ behavior: dolce ? 'smooth' : 'auto', block: 'start' });
-    history.replaceState(null, '', '#' + f.id);
+    history.replaceState(null, '', location.pathname + location.search + '#' + f.id);
     aggiorna(pdf);
   }
   function pdfDaId(id) {
     if (id === 'copertina') return 1;
     var m = /^pagina-(\d+)$/.exec(id);
-    return m ? pdfDaStampata(parseInt(m[1], 10)) : 0;
+    return m ? pdfDaNumero(parseInt(m[1], 10)) : 0;
   }
 
   // tutti i link interni (indice laterale e zone sulle pagine dell'indice)
@@ -157,7 +236,7 @@
   document.getElementById('vai').addEventListener('submit', function (e) {
     e.preventDefault();
     var n = parseInt(numPag.value, 10);
-    if (!isNaN(n)) vaiA(n <= 0 ? 1 : pdfDaStampata(n), false);
+    if (!isNaN(n)) vaiA(n <= 0 ? 1 : pdfDaNumero(n), false);
     numPag.blur();
   });
   numPag.addEventListener('focus', function () { numPag.select(); });
@@ -188,7 +267,6 @@
   applicaZoom();
 
   // ---------- pagina corrente: quella che occupa la parte alta dello schermo
-  var corrente = 1;
   function aggiorna(pdf) {
     corrente = pdf;
     if (document.activeElement !== numPag) numPag.value = etichetta(pdf);
@@ -214,13 +292,21 @@
       var pdf = calcola();
       if (pdf !== corrente) aggiorna(pdf);
       clearTimeout(timerHash);
-      timerHash = setTimeout(function () { history.replaceState(null, '', '#' + idPagina(corrente)); }, 400);
+      timerHash = setTimeout(function () {
+        history.replaceState(null, '', location.pathname + location.search + '#' + idPagina(corrente));
+      }, 400);
     });
   }, { passive: true });
 
-  // ---------- all'apertura: pagina dall'indirizzo (es. #pagina-23), altrimenti copertina
-  var iniziale = pdfDaId(location.hash.slice(1));
-  if (iniziale > 1) vaiA(iniziale, false); else aggiorna(1);
+  // ---------- all'apertura: lingua dall'indirizzo (?lang=en), poi quella salvata, poi quella del telefono
+  var m = /[?&]lang=(it|en)(?![a-z])/.exec(location.search);
+  var iniziale = m && m[1];
+  if (!iniziale) { try { iniziale = localStorage.getItem('libro_lute_lingua'); } catch (e) {} }
+  if (!EDIZIONI[iniziale]) iniziale = /^it/i.test(navigator.language || '') ? 'it' : 'en';
+  scegliLingua(iniziale, true);
+
+  var dalHash = pdfDaId(location.hash.slice(1));
+  if (dalHash > 1) vaiA(dalHash, false); else aggiorna(1);
   window.addEventListener('hashchange', function () {
     var pdf = pdfDaId(location.hash.slice(1));
     if (pdf) vaiA(pdf, false);

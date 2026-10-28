@@ -173,3 +173,19 @@ body.senza-indice .libro { margin-left: 0; }
 @media (min-width: 1001px) {
   .pannello__chiudi { display: none; }
 }
+
+/* ---------- scelta della lingua IT / EN */
+.lingue { display: flex; padding: 3px; border-radius: 10px; background: rgba(255, 255, 255, .12); }
+.lingue button {
+  min-width: 38px; height: 32px; padding: 0 8px;
+  border: 0; border-radius: 8px;
+  background: transparent; color: var(--crema);
+  font: 700 14px var(--sans); letter-spacing: .04em;
+  cursor: pointer;
+}
+.lingue button[aria-pressed="true"] { background: var(--crema); color: var(--marrone); }
+.lingue button:focus-visible { outline: 3px solid #f2c46d; outline-offset: 2px; }
+@media (max-width: 460px) {
+  .barra__titolo { display: none; }
+  .lingue { margin-right: auto; }
+}
