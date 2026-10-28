@@ -15,7 +15,7 @@
         titolo: 'LUTE · <em>15 anni di NOI</em>', titoloPagina: 'LUTE · 15 anni di NOI',
         indice: 'Indice', pag: 'Pag.', copertina: 'Copertina', sedi: 'Le sedi della LUTE', indiceLibro: 'Indice del libro',
         quarta: 'Quarta di copertina', pagina: 'Pagina', vai: 'Vai alla pagina', prima: 'Pagina precedente', dopo: 'Pagina successiva',
-        chiudi: "Chiudi l'indice", meno: 'Pagine più piccole', piu: 'Pagine più grandi',
+        chiudi: "Chiudi l'indice", cima: 'Torna in cima', meno: 'Pagine più piccole', piu: 'Pagine più grandi',
         suggerimento: 'Tocca un titolo dell’indice per andare alla sua pagina'
       }
     },
@@ -29,7 +29,7 @@
         titolo: 'LUTE · <em>15 Years of Us</em>', titoloPagina: 'LUTE · 15 Years of Us',
         indice: 'Contents', pag: 'Page', copertina: 'Cover', sedi: 'The venues of LUTE', indiceLibro: 'Table of contents',
         quarta: 'Back cover', pagina: 'Page', vai: 'Go to page', prima: 'Previous page', dopo: 'Next page',
-        chiudi: 'Close the contents', meno: 'Smaller pages', piu: 'Larger pages',
+        chiudi: 'Close the contents', cima: 'Back to top', meno: 'Smaller pages', piu: 'Larger pages',
         suggerimento: 'Tap a title in the contents to go to its page'
       }
     }
@@ -42,6 +42,7 @@
   var numPag = document.getElementById('numPag');
   var velo = document.getElementById('velo');
   var btnIndice = document.getElementById('btnIndice');
+  var btnCima = document.getElementById('btnCima');
   var schermoPiccolo = window.matchMedia('(max-width: 1000px)');
 
   var lingua, ed, TOT, figure = [], linkVoci = [], corrente = 1;
@@ -63,6 +64,7 @@
     document.getElementById('btnPrima').setAttribute('aria-label', t.prima);
     document.getElementById('btnDopo').setAttribute('aria-label', t.dopo);
     document.getElementById('btnChiudi').setAttribute('aria-label', t.chiudi);
+    btnCima.setAttribute('aria-label', t.cima);
     document.getElementById('zoomMeno').setAttribute('aria-label', t.meno);
     document.getElementById('zoomPiu').setAttribute('aria-label', t.piu);
     document.querySelectorAll('.lingue button').forEach(function (b) {
@@ -232,6 +234,9 @@
     vaiA(pdf, Math.abs(pdf - corrente) <= 2);
   });
 
+  // freccia in basso a destra: torna alla copertina
+  btnCima.addEventListener('click', function () { vaiA(1, Math.abs(corrente - 1) <= 3); });
+
   document.getElementById('btnPrima').addEventListener('click', function () { vaiA(corrente - 1, true); });
   document.getElementById('btnDopo').addEventListener('click', function () { vaiA(corrente + 1, true); });
   document.getElementById('vai').addEventListener('submit', function (e) {
@@ -270,6 +275,7 @@
   // ---------- pagina corrente: quella che occupa la parte alta dello schermo
   function aggiorna(pdf) {
     corrente = pdf;
+    btnCima.hidden = pdf <= 2;   // sulla copertina e sulla pagina dopo la freccia non serve
     if (document.activeElement !== numPag) numPag.value = etichetta(pdf);
     var attiva = null;
     linkVoci.forEach(function (a) { if (+a.dataset.pdf <= pdf) attiva = a; });

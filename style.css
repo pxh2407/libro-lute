@@ -198,3 +198,19 @@ body.senza-indice .libro { margin-left: 0; }
 .barra__testo { overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 760px) { .barra__testo { display: none; } }
 @media (max-width: 460px) { .barra__titolo { display: flex; flex: none; } .lingue { margin-right: auto; } .barra__logo { height: 34px; padding: 2px 6px; } }
+
+/* ---------- freccia "torna in cima" (compare dopo aver sfogliato un po') */
+.in-cima {
+  position: fixed; z-index: 25; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom));
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; padding: 0;
+  border: 2px solid var(--oro); border-radius: 50%;
+  background: var(--verde-lute); color: var(--bianco);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .3);
+  cursor: pointer; opacity: .92;
+}
+.in-cima:hover { opacity: 1; background: var(--verde-scuro); }
+.in-cima:focus-visible { outline: 3px solid var(--oro); outline-offset: 3px; }
+.in-cima[hidden] { display: none; }
+.in-cima svg { width: 24px; height: 24px; stroke-width: 2.5; }
+body.indice-aperto .in-cima { display: none; }
