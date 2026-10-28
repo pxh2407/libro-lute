@@ -6,6 +6,16 @@
   <title>LUTE · 15 anni di NOI</title>
   <meta name="description" content="Il libro per i 15 anni della LUTE di Milazzo, da sfogliare online: clicca su un titolo dell'indice per andare alla sua pagina.">
   <meta name="theme-color" content="#1b5e3f">
+  <script>
+    // Libro aperto dentro il traduttore di Google (dal sito LUTE tradotto, es. arrivando dal sito Erasmus in un'altra
+    // lingua): il libro esiste già in inglese, quindi si esce dal traduttore e si apre l'edizione originale,
+    // in italiano solo se la traduzione era verso l'italiano, altrimenti in inglese.
+    (function () {
+      if (!/\.translate\.goog$/.test(location.hostname)) return;
+      var tl = (/[?&]_x_tr_tl=([a-zA-Z-]+)/.exec(location.search) || [])[1] || '';
+      location.replace('https://pxh2407.github.io/libro-lute/?lang=' + (/^it/i.test(tl) ? 'it' : 'en') + location.hash);
+    })();
+  </script>
   <meta property="og:type" content="book">
   <meta property="og:title" content="LUTE · 15 anni di NOI">
   <meta property="og:description" content="Il libro per i 15 anni della LUTE di Milazzo, da sfogliare online, in italiano e in inglese.">
@@ -70,6 +80,6 @@
 
   <script src="dati.js?v=2"></script>
   <script src="dati-en.js?v=2"></script>
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

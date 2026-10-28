@@ -298,9 +298,15 @@
     });
   }, { passive: true });
 
-  // ---------- all'apertura: lingua dall'indirizzo (?lang=en), poi quella salvata, poi quella del telefono
+  // ---------- all'apertura: lingua dall'indirizzo (?lang=en), poi la provenienza, poi quella salvata, poi quella del telefono
+  // Provenienza: dal sito lutemilazzo.org non tradotto (sito Erasmus in italiano) -> italiano;
+  // dal sito LUTE tradotto da Google (sito Erasmus in un'altra lingua) -> inglese.
   var m = /[?&]lang=(it|en)(?![a-z])/.exec(location.search);
   var iniziale = m && m[1];
+  var da = '';
+  try { da = document.referrer ? new URL(document.referrer).hostname : ''; } catch (e) {}
+  if (!iniziale && /(^|\.)lutemilazzo\.org$/.test(da)) iniziale = 'it';
+  if (!iniziale && /(^|\.)translate\.goog$|^translate\.google\./.test(da)) iniziale = 'en';
   if (!iniziale) { try { iniziale = localStorage.getItem('libro_lute_lingua'); } catch (e) {} }
   if (!EDIZIONI[iniziale]) iniziale = /^it/i.test(navigator.language || '') ? 'it' : 'en';
   scegliLingua(iniziale, true);

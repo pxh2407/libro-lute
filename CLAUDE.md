@@ -14,6 +14,10 @@ App HTML-CSS-JS (statica, senza librerie) per leggere online il libro "LUTE · 1
 - Il libro inglese è un PDF a parte fornito dall'utente: `C:\Users\Filippo\Desktop\Book 15 Years Lute.pdf` (217 pagine). `python crea_pagine_en.py` crea `pagine-en/` e `dati-en.js`.
 - ⚠️ I numeri di pagina dell'indice stampato inglese sono COPIATI da quello italiano e non corrispondono al PDF inglese (i capitoli cadono più avanti; anche i numeri in testa alle pagine hanno salti). Lo script trova l'inizio dei capitoli dalle pagine con il titolo in caratteri grandi (48 = 48 voci, controllato). Nell'app, in entrambe le lingue, "pagina N" = pagina N+1 del PDF.
 - Cambiando lingua si resta nello stesso capitolo, alla stessa distanza dal suo inizio.
+- **Arrivo dal sito Erasmus → sito LUTE → menu Documenti (2026-10-28, richiesta dell'utente; NON toccare il sito Erasmus né lutemilazzo.org):**
+  - lingua Erasmus diversa dall'italiano: il sito LUTE è tradotto da Google e anche il libro si apre dentro il traduttore (`pxh2407-github-io.translate.goog/libro-lute/?_x_tr_tl=pl`). Uno script in testa a index.html esce dal traduttore e apre `https://pxh2407.github.io/libro-lute/?lang=en` (o `?lang=it` se la traduzione era verso l'italiano);
+  - lingua Erasmus italiana: il libro arriva da `lutemilazzo.org` non tradotto → app.js sceglie l'italiano (dalla provenienza, `document.referrer`). Se si arriva da `translate.goog` senza passare dallo script → inglese.
+  - Ordine di scelta della lingua: `?lang=` → provenienza → lingua salvata → lingua del telefono.
 - Una prima traduzione fatta da Claude è stata abbandonata quando è arrivato il PDF inglese.
 
 ## File
